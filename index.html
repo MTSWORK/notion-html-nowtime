@@ -1,1 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<style>
+
+body{
+margin:0;
+background:#ffffff;
+font-family:Arial, sans-serif;
+text-align:center;
+}
+
+.wrap{
+width:100%;
+padding:10px 0;
+}
+
+.date{
+font-size:24px;
+margin-bottom:4px;
+}
+
+.clock{
+font-size:64px;
+font-weight:bold;
+letter-spacing:3px;
+margin-bottom:10px;
+}
+
+.progressBox{
+width:95%;
+height:12px;
+background:#e5e5e5;
+margin:8px auto;
+border-radius:20px;
+overflow:hidden;
+}
+
+.bar{
+height:100%;
+background:#000;
+width:0%;
+}
+
+.info{
+font-size:14px;
+color:#333;
+margin-bottom:4px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<div class="date" id="date"></div>
+
+<div class="clock" id="clock"></div>
+
+<div class="progressBox">
+<div class="bar" id="dayBar"></div>
+</div>
+
+<div class="info" id="dayInfo"></div>
+
+<div class="progressBox">
+<div class="bar" id="yearBar"></div>
+</div>
+
+<div class="info" id="yearInfo"></div>
+
+</div>
+
+<script>
+
+function update(){
+
+const now = new Date()
+
+const week=["일","월","화","수","목","금","토"]
+
+const y=now.getFullYear()
+const m=String(now.getMonth()+1).padStart(2,'0')
+const d=String(now.getDate()).padStart(2,'0')
+const w=week[now.getDay()]
+
+document.getElementById("date").innerText=`${y}.${m}.${d} (${w})`
+
+const h=String(now.getHours()).padStart(2,'0')
+const min=String(now.getMinutes()).padStart(2,'0')
+const s=String(now.getSeconds()).padStart(2,'0')
+
+document.getElementById("clock").innerText=`${h}:${min}:${s}`
+
+// 하루 진행률
+
+const passed=
+now.getHours()*3600+
+now.getMinutes()*60+
+now.getSeconds()
+
+const dayPercent=(passed/86400)*100
+
+document.getElementById("dayBar").style.width=dayPercent+"%"
+
+const remain=86400-passed
+
+const rh=Math.floor(remain/3600)
+const rm=Math.floor((remain%3600)/60)
+
+document.getElementById("dayInfo").innerText=
+`오늘 ${dayPercent.toFixed(2)}% 진행 / 남은시간 ${rh}시간 ${rm}분`
+
+// 올해 진행률
+
+const start=new Date(y,0,1)
+const end=new Date(y+1,0,1)
+
+const yearPercent=((now-start)/(end-start))*100
+
+document.getElementById("yearBar").style.width=yearPercent+"%"
+
+document.getElementById("yearInfo").innerText=
+`올해 ${yearPercent.toFixed(2)}% 진행`
+
+}
+
+setInterval(update,1000)
+
+update()
+
+</script>
+
+</body>
+</html>
